@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hwork SSO 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            background: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #0088cc;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #006699;
+        }
+        .info {
+            background: #e7f3ff;
+            border-left: 4px solid #0088cc;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Hwork SSO 测试页面</h1>
+        
+        <div class="form-group">
+            <label for="token">JWT Token:</label>
+            <input type="text" id="token" placeholder="请输入 JWT Token">
+        </div>
+        
+        <button onclick="testSSO()">测试 SSO 登录</button>
+        
+        <div class="info">
+            <h3>📝 使用说明</h3>
+            <ol>
+                <li>从 Hwork 主系统获取 JWT Token</li>
+                <li>将 Token 粘贴到上方输入框</li>
+                <li>点击"测试 SSO 登录"按钮</li>
+                <li>系统将自动跳转并完成登录</li>
+            </ol>
+        </div>
+
+        <div class="info">
+            <h3>🔍 当前状态</h3>
+            <p><strong>Token 状态:</strong> <span id="tokenStatus">未设置</span></p>
+            <p><strong>当前 Token:</strong> <code id="currentToken">无</code></p>
+            <button onclick="checkStatus()">刷新状态</button>
+            <button onclick="clearToken()">清除 Token</button>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function testSSO() {
+            const token = document.getElementById('token').value.trim();
+            
+            if (!token) {
+                showStatus('请输入 JWT Token', 'error');
+                return;
+            }
+            
+            showStatus('正在跳转到 SSO 登录...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = `/hwork-sso?token=${encodeURIComponent(token)}`;
+            }, 500);
+        }
+
+        function checkStatus() {
+            const token = localStorage.getItem('hwork_system_token');
+            const statusEl = document.getElementById('tokenStatus');
+            const tokenEl = document.getElementById('currentToken');
+            
+            if (token) {
+                statusEl.textContent = '已设置 ✅';
+                statusEl.style.color = 'green';
+                tokenEl.textContent = token.substring(0, 50) + '...';
+            } else {
+                statusEl.textContent = '未设置 ❌';
+                statusEl.style.color = 'red';
+                tokenEl.textContent = '无';
+            }
+        }
+
+        function clearToken() {
+            localStorage.removeItem('hwork_system_token');
+            showStatus('Token 已清除', 'success');
+            checkStatus();
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+        }
+
+        // 页面加载时检查状态
+        window.onload = function() {
+            checkStatus();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+zh_CN:
+  site_settings:
+    hwork_sso_enabled: "启用 Hwork SSO"
+    hwork_api_url: "Hwork API 地址"
+    hwork_cache_duration: "Token 缓存时长（秒）"
+    hwork_request_timeout: "API 请求超时时间（秒）"

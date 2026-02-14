@@ -1,0 +1,13 @@
+plugins:
+  hwork_sso_enabled:
+    default: true
+    client: true
+  hwork_api_url:
+    default: "https://pre-hwork.haier.net/gw/login/api/v2/get-user-info"
+    client: false
+  hwork_cache_duration:
+    default: 300
+    client: false
+  hwork_request_timeout:
+    default: 5
+    client: false

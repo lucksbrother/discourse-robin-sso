@@ -1,0 +1,6 @@
+en:
+  site_settings:
+    hwork_sso_enabled: "Enable Hwork SSO"
+    hwork_api_url: "Hwork API URL"
+    hwork_cache_duration: "Token cache duration (seconds)"
+    hwork_request_timeout: "API request timeout (seconds)"
