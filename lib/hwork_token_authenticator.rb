@@ -37,7 +37,8 @@ class HworkTokenAuthenticator
 
     return nil unless response.success?
 
-    data = JSON.parse(response.body)
+    body = response.body.force_encoding('UTF-8')
+    data = JSON.parse(body)
     return nil unless data["code"] == 200
 
     {
@@ -51,12 +52,27 @@ class HworkTokenAuthenticator
   end
 
   def self.find_or_create_user(user_info)
-    username = "user_#{user_info[:user_id]}"
+    username = user_info[:user_id]
     email = user_info[:email] || "#{username}@hwork.local"
 
+    # 先通过用户名查找
     user = User.find_by(username: username)
-    return user if user
+    if user
+      user.update(name: user_info[:user_name]) if user_info[:user_name].present?
+      return user
+    end
 
+    # 再通过邮箱查找（Discourse 使用 user_emails 表）
+    if user_info[:email]
+      user_email = UserEmail.find_by(email: email)
+      if user_email
+        user = user_email.user
+        user.update(name: user_info[:user_name]) if user_info[:user_name].present?
+        return user
+      end
+    end
+
+    # 创建新用户
     User.create!(
       username: username,
       name: user_info[:user_name],
