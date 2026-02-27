@@ -2,12 +2,39 @@
 
 Hwork 主系统 SSO 集成插件，支持通过 JWT Token 实现单点登录。
 
+## 🎉 新功能：Cookie 自动登录（v2.0）
+
+**更安全的登录方式**：无需在 URL 中传递 token，通过共享 Cookie + 专用登录页面实现自动登录。
+
+### 快速开始
+
+1. **主系统设置 Cookie 并跳转**：
+```javascript
+// 登录成功后
+const env = import.meta.env.VITE_NODE_ENV; // test/staging/production
+const cookieNames = {
+  test: 'hwork_token_test',
+  staging: 'hwork_token_pre',
+  production: 'hwork_token_prod'
+};
+
+document.cookie = `${cookieNames[env]}=${token}; domain=.yourdomain.com; path=/; max-age=7200; SameSite=Lax; Secure`;
+window.location.href = 'https://forum.yourdomain.com/hwork-sso-cookie';
+```
+
+2. **用户自动登录**：访问登录页面后自动完成认证并跳转！
+
+📖 详细配置：[COOKIE_AUTO_LOGIN.md](./COOKIE_AUTO_LOGIN.md)
+
+---
+
 ## 功能特性
 
+- ✅ **Cookie 自动登录**（推荐）- 安全、无感知
+- ✅ **URL 跳转登录**（兼容）- 支持旧方式
 - ✅ JWT Token 认证
 - ✅ 自动用户创建/查找
 - ✅ Token 缓存机制（5分钟）
-- ✅ 前端自动注入 Token
 - ✅ 与现有认证兼容
 
 ## 安装

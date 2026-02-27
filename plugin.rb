@@ -15,6 +15,8 @@ after_initialize do
   # 添加路由
   Discourse::Application.routes.append do
     get "/hwork-sso" => "hwork_sso#login"
+    get "/hwork-sso-cookie" => "hwork_sso#cookie_login_page"
+    post "/hwork-sso/auto-login" => "hwork_sso#auto_login"
   end
 
   # 扩展 CurrentUser 以支持 Token 认证

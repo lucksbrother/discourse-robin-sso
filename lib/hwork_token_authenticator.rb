@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class HworkTokenAuthenticator
-  HWORK_API_URL = "https://pre-hwork.haier.net/gw/login/api/v2/get-user-info"
-  CACHE_DURATION = 5.minutes
-  REQUEST_TIMEOUT = 5
-
   def self.authenticate(token)
     return nil if token.blank?
 
@@ -19,19 +15,31 @@ class HworkTokenAuthenticator
 
   private
 
+  def self.api_url
+    SiteSetting.hwork_api_url
+  end
+
+  def self.cache_duration
+    SiteSetting.hwork_cache_duration.seconds
+  end
+
+  def self.request_timeout
+    SiteSetting.hwork_request_timeout
+  end
+
   def self.verify_token(token)
     cache_key = "hwork_token:#{Digest::SHA256.hexdigest(token)}"
     
-    Rails.cache.fetch(cache_key, expires_in: CACHE_DURATION) do
+    Rails.cache.fetch(cache_key, expires_in: cache_duration) do
       fetch_user_info(token)
     end
   end
 
   def self.fetch_user_info(token)
     response = Faraday.new do |f|
-      f.options.timeout = REQUEST_TIMEOUT
-      f.options.open_timeout = REQUEST_TIMEOUT
-    end.get(HWORK_API_URL) do |req|
+      f.options.timeout = request_timeout
+      f.options.open_timeout = request_timeout
+    end.get(api_url) do |req|
       req.headers["Authorization"] = "Bearer #{token}"
     end
 

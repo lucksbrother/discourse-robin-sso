@@ -11,3 +11,11 @@ plugins:
   hwork_request_timeout:
     default: 5
     client: false
+  hwork_environment:
+    default: "staging"
+    type: enum
+    choices:
+      - test
+      - staging
+      - production
+    client: true
